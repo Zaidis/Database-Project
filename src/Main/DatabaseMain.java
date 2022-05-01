@@ -79,9 +79,10 @@ public class DatabaseMain {
 	}
 	 
 	 static void DisplayHelp() {
-		 da.feedback.setText("Welcome to the game database! Type in the corresponding number and click submit. Here's a list of \n possible instructions: \n");
+		 da.feedback.setText("Welcome to the game database! Type in the corresponding number and click submit. Instruction Template: <NUM>, <INPUT>, <INPUT> etc.\nType help to clear console.\nHere's a list of \n possible instructions: \n");
 	     da.feedback.append("1: Find game by rank range X\n2: Find publisher whose sales are in range X\n3: Search for games made by specific publisher\n4: Find games on specific platform\n5: Search by Publisher and Genre"
-	     		+ "\n6: Search by game year and publisher");
+	     		+ "\n6: Search by game year and publisher\n7: Search publisher and platform\n8: Find games by publisher, platform and within X years\n9: Find games and years of given publisher and platform\n10: Find games, platform and NA sales by publisher\n11: Find games by platform and specific year"
+	     		+ "\n12: Find global sales of given publisher and platform ");
 	 }
 	 
 	 static String AdvancedQuery(String q) {
@@ -101,6 +102,13 @@ public class DatabaseMain {
 		 case 4: {s += "SELECT g.game_rank, g.game_name FROM Game g, IsOn o WHERE g.game_name = o.game_name AND o.platform_name = '" + answer[1] + "' ORDER BY g.game_rank;\r\n";  break;}
 		 case 5: {s += "SELECT g.game_rank, g.game_name FROM Game g, Has genre, Publisher p, MadeBy b WHERE g.game_rank = b.game_rank AND b.publisher_name = p.publisher_name AND p.publisher_name = '" + answer[1] + "' AND genre.genre_name = '" + answer[2] + "' AND genre.game_rank = g.game_rank ORDER BY g.game_rank; \r\n"; break;}
 		 case 6: {s += "SELECT g.game_name, g.game_year FROM Game g, MadeBy b WHERE g.game_rank = b.game_rank AND g.game_year >= '" + answer[1] + "' AND b.publisher_name = '" + answer[2] + "' ORDER BY g.game_rank;\r\n"; break;}
+		 case 7: {s += "SELECT g.game_name, o.platform_name, b.publisher_name FROM Game g, MadeBy b, IsOn o WHERE g.game_rank = b.game_rank AND b.publisher_name = '" + answer[1] + "' AND g.game_name = o.game_name AND o.platform_name = '" + answer[2] +"' ORDER BY g.game_rank;"; break;}
+		 case 8: {s += "SELECT g.game_name, g.game_year FROM Game g, MadeBy b, IsOn o WHERE g.game_rank = b.game_rank AND b.publisher_name = '" + answer[1] + "' AND g.game_name = o.game_name AND o.platform_name = '" + answer[2] + "' AND g.game_year >= '" + answer[3] + "' ORDER BY g.game_rank;\r\n"; break;}
+		 case 9: {s += "SELECT g.game_name, g.game_year FROM Game g, MadeBy b, IsOn o WHERE g.game_rank = b.game_rank AND b.publisher_name = '" + answer[1] + "' AND g.game_name = o.game_name AND o.platform_name = '" + answer[2] + "' ORDER BY g.game_rank;"; break;}
+		 case 10: {s += "SELECT g.game_name, o.platform_name, g.game_NAsales FROM Game g, MadeBy b, IsOn o WHERE g.game_rank = b.game_rank AND b.publisher_name = '" + answer[1] + "' AND g.game_name = o.game_name ORDER BY g.game_rank;\r\n"; break;}
+		 case 11: {s += "SELECT g.game_rank, g.game_name FROM Game g, IsOn o WHERE g.game_name = o.game_name AND o.platform_name = '" + answer[1] + "' AND g.game_year = " + answer[2] + " ORDER BY g.game_rank;\r\n"; break;}
+		 case 12: {s += "SELECT g.game_name, o.platform_name, b.publisher_name, g.game_Gsales FROM Game g, MadeBy b, IsOn o WHERE g.game_rank = b.game_rank AND b.publisher_name = '" + answer[1] + "' AND g.game_name = o.game_name AND o.platform_name = '" + answer[2] + "' ORDER BY g.game_rank;\r\n"; break;}
+
 		 }
 		 da.feedback.append("\n" + s);
 		 return s;
