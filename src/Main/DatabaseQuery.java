@@ -1,10 +1,13 @@
 package Main;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import java.util.Scanner;
 import java.util.Vector;
 
 import javax.swing.JTable;
@@ -51,5 +54,21 @@ public class DatabaseQuery {
 	    	}
 	    	return resultSet;
 	    } // end of simpleQuery method
+	    
+	    public ResultSet simpleStoreProcedure(String spName, String input) {
+
+			try {
+				statement = connection.createStatement();
+				CallableStatement myCallStmt = connection.prepareCall("{call "+spName+"(?)}");
+		        myCallStmt.setString(1,  input);
+				myCallStmt.registerOutParameter(1,Types.VARCHAR);
+				myCallStmt.execute();
+		        resultSet = myCallStmt.getResultSet();
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return resultSet;
+		}
 	    
 }
